@@ -1,3 +1,5 @@
+import java.util.function.Function;
+
 /**
  * Starter code to implement an ExpressionParser. Your parser methods should use the following grammar:
  * E := A | X
@@ -26,6 +28,55 @@ public class SimpleExpressionParser implements ExpressionParser {
 		// Flatten the expression before returning
 		expression.flatten();
 		return expression;
+	}
+	
+	private boolean parseE(String str)
+	{
+		if(parseA(str))
+		{
+			return true;
+		}
+		else if(parseX(str))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	private boolean parseA(String str)
+	{
+		if(parseProductionRule(str, '+', SimpleExpressionParser::parseA, SimpleExpressionParser::parseX))
+		{
+			return true;
+		}
+		else if(parseM(str))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	private boolean parseX()
+	{
+		
+	}
+	
+	private boolean parseProductionRule(String str, char operator, Function<String, Boolean> parseBeforeOperator, Function<String, Boolean> parseAfterOperator)
+	{
+		for(int i = 1; i < str.length() - 1; i++)
+		{
+			if(str.charAt(i) == operator && parseBeforeOperator(str.substring(0, i)) && parseAfterOperator(str.substring(i + 1)))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	protected Expression parseExpression (String str) {
