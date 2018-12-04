@@ -11,7 +11,7 @@ import java.util.function.Function;
 public class SimpleExpressionParser implements ExpressionParser {
 	/*
 	 * Attempts to create an expression tree -- flattened as much as possible -- from the specified String.
-         * Throws a ExpressionParseException if the specified string cannot be parsed.
+	 * Throws a ExpressionParseException if the specified string cannot be parsed.
 	 * @param str the string to parse into an expression tree
 	 * @param withJavaFXControls you can just ignore this variable for R1
 	 * @return the Expression object representing the parsed expression tree
@@ -29,8 +29,8 @@ public class SimpleExpressionParser implements ExpressionParser {
 		expression.flatten();
 		return expression;
 	}
-	
-	private boolean parseE(String str)
+
+	private Expression parseE(String str)
 	{
 		if(parseA(str))
 		{
@@ -45,8 +45,8 @@ public class SimpleExpressionParser implements ExpressionParser {
 			return false;
 		}
 	}
-	
-	private boolean parseA(String str)
+
+	private Expression parseA(String str)
 	{
 		if(parseProductionRule(str, '+', SimpleExpressionParser::parseA, SimpleExpressionParser::parseX))
 		{
@@ -61,13 +61,24 @@ public class SimpleExpressionParser implements ExpressionParser {
 			return false;
 		}
 	}
-	
-	private boolean parseX()
-	{
-		
+
+	private Expression parseM(String str) {
+		// TODO Auto-generated method stub
+		return false;
 	}
-	
-	private boolean parseProductionRule(String str, char operator, Function<String, Boolean> parseBeforeOperator, Function<String, Boolean> parseAfterOperator)
+
+	private Expression parseProductionRule(String str, char operator, Object parseBeforeOperator,
+										   Object parseAfterOperator) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private Expression parseX()
+	{
+
+	}
+
+	private Expression parseProductionRule(String str, char operator, Function<String, Boolean> parseBeforeOperator, Function<String, Boolean> parseAfterOperator)
 	{
 		for(int i = 1; i < str.length() - 1; i++)
 		{
@@ -78,11 +89,41 @@ public class SimpleExpressionParser implements ExpressionParser {
 		}
 		return false;
 	}
-	
+
+	private void convertToString(StringBuilder stringBuilder, int indentLevel) {
+
+		indent(stringBuilder, indentLevel);
+
+		stringBuilder.append(_name);
+
+		stringBuilder.append("\n");
+
+		for(Node child : _children) {
+
+			child.convertToString(stringBuilder, indentLevel + 1);
+
+		}
+
+	}
+
+	public static void indent(StringBuilder stringBuilder, int indentLevel) {
+
+		for(int i = 0; i <indentLevel; i++) {
+			stringBuilder.append("\t");
+		}
+	}
+
 	protected Expression parseExpression (String str) {
 		Expression expression;
-		
+
+
 		// TODO implement me
 		return null;
+	}
+
+	public Expression deepCopy() {
+
+		return null;
+
 	}
 }
