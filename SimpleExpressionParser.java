@@ -29,14 +29,53 @@ public class SimpleExpressionParser implements ExpressionParser {
 		expression.flatten();
 		return expression;
 	}
-
-	private Expression parseE(String str)
+	
+	private static boolean isA(String str)
 	{
-		if(parseA(str))
+		if(isValidRule(str, '+', SimpleExpressionParser::isA, SimpleExpressionParser::isM))
 		{
 			return true;
 		}
-		else if(parseX(str))
+		else if(isM(str))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	private static boolean isM(String str)
+	{
+		if(isValidRule(str, '*', SimpleExpressionParser::isM, SimpleExpressionParser::isM))
+		{
+			return true;
+		}
+		else if(isX(str))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	private static boolean isX(String str)
+	{
+		if(isValidRule(str, '*', SimpleExpressionParser::isM, SimpleExpressionParser::isM))
+		{
+			return true;
+		}
+		else if(isX(str))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	private Expression parseE(String str)
+	{
+		if(isA(str))
+		{
+			return true;
+		}
+		else if(isX(str))
 		{
 			return true;
 		}
@@ -48,7 +87,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 
 	private Expression parseA(String str)
 	{
-		if(parseProductionRule(str, '+', SimpleExpressionParser::parseA, SimpleExpressionParser::parseX))
+		if(parseProductionRule(str, '+', SimpleExpressionParser::parseA, SimpleExpressionParser::parseM))
 		{
 			return true;
 		}
@@ -67,22 +106,16 @@ public class SimpleExpressionParser implements ExpressionParser {
 		return false;
 	}
 
-	private Expression parseProductionRule(String str, char operator, Object parseBeforeOperator,
-										   Object parseAfterOperator) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	private Expression parseX()
 	{
 
 	}
 
-	private Expression parseProductionRule(String str, char operator, Function<String, Boolean> parseBeforeOperator, Function<String, Boolean> parseAfterOperator)
+	private static boolean isValidRule(String str, char operator, Function<String, Boolean> testLeftSubexpression, Function<String, Boolean> testRightSubexpression)
 	{
 		for(int i = 1; i < str.length() - 1; i++)
 		{
-			if(str.charAt(i) == operator && parseBeforeOperator(str.substring(0, i)) && parseAfterOperator(str.substring(i + 1)))
+			if(str.charAt(i) == operator && testLeftSubexpression.apply(str.substring(0, i)) && testRightSubexpression.apply(str.substring(i + 1)))
 			{
 				return true;
 			}
@@ -90,6 +123,22 @@ public class SimpleExpressionParser implements ExpressionParser {
 		return false;
 	}
 
+	protected Expression parseExpression (String str) {
+		Expression expression = parseE(str);
+		
+		return null;
+	}
+
+	
+	
+	
+	
+	public Expression deepCopy() {
+
+		return null;
+
+	}
+	
 	private void convertToString(StringBuilder stringBuilder, int indentLevel) {
 
 		indent(stringBuilder, indentLevel);
@@ -111,19 +160,5 @@ public class SimpleExpressionParser implements ExpressionParser {
 		for(int i = 0; i <indentLevel; i++) {
 			stringBuilder.append("\t");
 		}
-	}
-
-	protected Expression parseExpression (String str) {
-		Expression expression;
-
-
-		// TODO implement me
-		return null;
-	}
-
-	public Expression deepCopy() {
-
-		return null;
-
 	}
 }
