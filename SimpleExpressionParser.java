@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.function.Function;
 
 /**
@@ -30,6 +31,19 @@ public class SimpleExpressionParser implements ExpressionParser {
 		return expression;
 	}
 	
+	private static boolean isE(String str)
+	{
+		if(isA(str))
+		{
+			return true;
+		}
+		else if(isX(str))
+		{
+			return true;
+		}
+		return false;
+	}
+	
 	private static boolean isA(String str)
 	{
 		if(isValidRule(str, '+', SimpleExpressionParser::isA, SimpleExpressionParser::isM))
@@ -58,34 +72,40 @@ public class SimpleExpressionParser implements ExpressionParser {
 	
 	private static boolean isX(String str)
 	{
-		if(isValidRule(str, '*', SimpleExpressionParser::isM, SimpleExpressionParser::isM))
+		if(str.charAt(0) == '(' && str.charAt(str.toCharArray().length) == ')')
 		{
-			return true;
+			if(isE(str.substring(1, str.toCharArray().length - 1)))
+			{
+				return true;
+			}
 		}
-		else if(isX(str))
+		else if(isL(str))
 		{
 			return true;
 		}
 		return false;
 	}
 
-	private Expression parseE(String str)
+	private static boolean isL(String str)
 	{
-		if(isA(str))
+		char [] unallowedCharacters = {'~', '`', '!', '@', '#', '$', '%', '^', '&', '(', ')', '-', '_', '=', '{', '[', '}', ']', ':', ';', '"', '\\', '\'', '?',
+										'/', '>', '.', '<', ',', '|'}; 
+		for(int i = 0; i < unallowedCharacters.length; i++)
 		{
-			return true;
+			if(Arrays.asList(str.toCharArray()).contains(unallowedCharacters[i]))
+			{
+				return false;
+			}
 		}
-		else if(isX(str))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return true;
+	}
+	
+	private static Expression parseE(String str)
+	{
+		
 	}
 
-	private Expression parseA(String str)
+	private static Expression parseA(String str)
 	{
 		if(parseProductionRule(str, '+', SimpleExpressionParser::parseA, SimpleExpressionParser::parseM))
 		{
@@ -101,12 +121,12 @@ public class SimpleExpressionParser implements ExpressionParser {
 		}
 	}
 
-	private Expression parseM(String str) {
-		// TODO Auto-generated method stub
+	private static Expression parseM(String str) 
+	{
 		return false;
 	}
 
-	private Expression parseX()
+	private static Expression parseX()
 	{
 
 	}
