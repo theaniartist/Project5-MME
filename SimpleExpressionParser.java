@@ -128,37 +128,50 @@ public class SimpleExpressionParser implements ExpressionParser {
 		
 		return null;
 	}
-
-	
-	
-	
 	
 	public Expression deepCopy() {
 
 		return null;
 
 	}
-	
-	private void convertToString(StringBuilder stringBuilder, int indentLevel) {
 
+	/**
+	 * Method that recursively calls itself to create a String of type Expression and its children
+	 * that starts at the given indent level.
+	 * @param stringBuilder the stringBuilder that appends a name and a new line to create a String 
+	 * @param indentLevel the current indentation level
+	 */
+
+	public void convertToString(StringBuilder stringBuilder, int indentLevel)
+	{
 		indent(stringBuilder, indentLevel);
 
-		stringBuilder.append(_name);
+		stringBuilder.append(_data);
 
-		stringBuilder.append("\n");
+		stringBuilder.append('\n');
 
-		for(Node child : _children) {
+		for (Expression expr : _children) {
 
-			child.convertToString(stringBuilder, indentLevel + 1);
+			expr.convertToString(stringBuilder, indentLevel + 1);
 
 		}
 
 	}
 
+	/**
+	 * Helper method for indentation for StirngBuilder
+	 * @param stringBuilder the stringBuilder that appends each tab character
+	 * @param indentLevel the number of tabs that must be appended to StirngBuilder
+	 */
+
+
 	public static void indent(StringBuilder stringBuilder, int indentLevel) {
 
-		for(int i = 0; i <indentLevel; i++) {
-			stringBuilder.append("\t");
+		for(int i = 0; i < indentLevel; i++) {
+
+			stringBuilder.append('\t');
+
 		}
+
 	}
 }
