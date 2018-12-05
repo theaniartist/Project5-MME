@@ -148,37 +148,11 @@ public class SimpleExpressionParser implements ExpressionParser {
 		
 		return null;
 	}
-
-	
-	
-	
 	
 	public Expression deepCopy() {
 
 		return null;
 
 	}
-	
-	private void convertToString(StringBuilder stringBuilder, int indentLevel) {
 
-		indent(stringBuilder, indentLevel);
-
-		stringBuilder.append(_name);
-
-		stringBuilder.append("\n");
-
-		for(Node child : _children) {
-
-			child.convertToString(stringBuilder, indentLevel + 1);
-
-		}
-
-	}
-
-	public static void indent(StringBuilder stringBuilder, int indentLevel) {
-
-		for(int i = 0; i <indentLevel; i++) {
-			stringBuilder.append("\t");
-		}
-	}
 }
