@@ -72,7 +72,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 	
 	private static boolean isX(String str)
 	{
-		if(str.charAt(0) == '(' && str.charAt(str.toCharArray().length) == ')')
+		if(str.charAt(0) == '(' && str.charAt(str.toCharArray().length - 1) == ')')
 		{
 			if(isE(str.substring(1, str.toCharArray().length - 1)))
 			{
@@ -89,48 +89,20 @@ public class SimpleExpressionParser implements ExpressionParser {
 	private static boolean isL(String str)
 	{
 		char [] unallowedCharacters = {'~', '`', '!', '@', '#', '$', '%', '^', '&', '(', ')', '-', '_', '=', '{', '[', '}', ']', ':', ';', '"', '\\', '\'', '?',
-										'/', '>', '.', '<', ',', '|'}; 
+										'/', '>', '.', '<', ',', '|', '*', '+'}; 
 		for(int i = 0; i < unallowedCharacters.length; i++)
 		{
-			if(Arrays.asList(str.toCharArray()).contains(unallowedCharacters[i]))
+			for(int j = 0; j < str.toCharArray().length; j++)
 			{
-				return false;
+				if(str.toCharArray()[j] == unallowedCharacters[i])
+				{
+					return false;
+				}
 			}
 		}
 		return true;
 	}
 	
-	private static Expression parseE(String str)
-	{
-		
-	}
-
-	private static Expression parseA(String str)
-	{
-		if(parseProductionRule(str, '+', SimpleExpressionParser::parseA, SimpleExpressionParser::parseM))
-		{
-			return true;
-		}
-		else if(parseM(str))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	private static Expression parseM(String str) 
-	{
-		return false;
-	}
-
-	private static Expression parseX()
-	{
-
-	}
-
 	private static boolean isValidRule(String str, char operator, Function<String, Boolean> testLeftSubexpression, Function<String, Boolean> testRightSubexpression)
 	{
 		for(int i = 1; i < str.length() - 1; i++)
@@ -142,11 +114,75 @@ public class SimpleExpressionParser implements ExpressionParser {
 		}
 		return false;
 	}
+	
+	private static Expression parseE(String str)
+	{
+		if(isA(str))
+		{
+			return parseA(str);
+		}
+		else if(isM(str))
+		{
+			return parseM(str);
+		}
+		return null;
+	}
+
+	private static Expression parseA(String str)
+	{
+		AdditiveExpression additiveNode = null;
+		if(isValidRule(str, '+', SimpleExpressionParser::isA, SimpleExpressionParser::isM))
+		{
+			additiveNode = new AdditiveExpression("+");
+			additiveNode.addSubexpression(parseM(str.substring(0, str.indexOf('+'))));
+			additiveNode.addSubexpression(parseA(str.substring(str.indexOf('+') + 1)));
+			return additiveNode;
+		}
+		else if(isM(str))
+		{
+			return parseM(str);
+		}
+		return null;
+	}
+
+	private static Expression parseM(String str)
+	{
+		if(isValidRule(str, '*', SimpleExpressionParser::isM, SimpleExpressionParser::isM))
+		{
+			MultiplicativeExpression multipilicativeNode = new MultiplicativeExpression("*");
+			multipilicativeNode.addSubexpression(parseM(str.substring(0, str.indexOf('*'))));
+			multipilicativeNode.addSubexpression(parseM(str.substring(str.indexOf('*') + 1)));
+			return multipilicativeNode;
+		} 
+		else if(isX(str))
+		{
+			return parseX(str);
+		}
+		return null;
+	}
+
+	private static Expression parseX(String str)
+	{
+		if(str.charAt(0) == '(' && str.charAt(str.toCharArray().length - 1) == ')')
+		{
+			if(isE(str.substring(1, str.toCharArray().length - 1)))
+			{
+				ParentheticalExpression parentheticalNode = new ParentheticalExpression("()");
+				parentheticalNode.addSubexpression(parseE(str.substring(1, str.toCharArray().length - 1)));
+				return parentheticalNode;
+			}
+		}
+		else if(isL(str))
+		{
+			return new LiteralExpression(str);
+		}
+		return null;
+	}
 
 	protected Expression parseExpression (String str) {
 		Expression expression = parseE(str);
 		
-		return null;
+		return expression;
 	}
 	
 	public Expression deepCopy() {
