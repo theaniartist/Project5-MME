@@ -5,13 +5,13 @@ public abstract class ExpressionNode implements Expression
 		
 		public String _data;
 		private CompoundExpression _parent;
-		protected LinkedList<Expression> _children;
+		protected LinkedList<ExpressionNode> _children;
 		
 		public ExpressionNode(String data)
 		{
 			_data = data;
 			_parent = null;
-			_children = new LinkedList<Expression>();
+			_children = new LinkedList<ExpressionNode>();
 		}
 		
 		/**
@@ -78,22 +78,20 @@ public abstract class ExpressionNode implements Expression
 
 		public void flatten()
 		{
-
-			if (_children.size() > 0) {
-
-
-				for (ExpressionNode subExpr : _children) {
-
+			if (_children.size() > 0) 
+			{
+				int i = 0;
+				while(i < _children.size())
+				{
+					ExpressionNode subExpr = _children.get(i);
 					subExpr.flatten();
-
-					if (_data.equals(subExpr._data)) {
-
+					if (_data.equals(subExpr._data)) 
+					{
 						_children.addAll(subExpr._children);
 						_children.remove(subExpr);
-
 					}
-				}
-
+					i++;
+				}				
 			}
 		}
 }

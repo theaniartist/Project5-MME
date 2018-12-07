@@ -5,15 +5,14 @@ public abstract class CompoundExpressionNode extends ExpressionNode implements C
 	public CompoundExpressionNode(String data)
 	{
 		super(data);
-		_children = new LinkedList<Expression>();
 	}
 	
 	public void addSubexpression(Expression expression)
 	{
-		_children.add(expression);
+		_children.add((ExpressionNode)expression);
 	}
 	
-	public LinkedList<Expression> getSubexpressions()
+	public LinkedList<ExpressionNode> getSubexpressions()
 	{
 		return _children;
 	}
