@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.function.Function;
 
 /**
@@ -33,11 +34,11 @@ public class SimpleExpressionParser implements ExpressionParser {
 	
 	private static boolean isE(String str)
 	{
-		if(isA(str))
+		if(isX(str))
 		{
 			return true;
 		}
-		else if(isX(str))
+		else if(isA(str))
 		{
 			return true;
 		}
@@ -72,9 +73,9 @@ public class SimpleExpressionParser implements ExpressionParser {
 	
 	private static boolean isX(String str)
 	{
-		if(str.charAt(0) == '(' && str.charAt(str.toCharArray().length - 1) == ')')
+		if(str.charAt(0) == '(' && findEndOfParenthetical(str) != -1)
 		{
-			if(isE(str.substring(1, str.toCharArray().length - 1)))
+			if(isE(str.substring(1, findEndOfParenthetical(str))))
 			{
 				return true;
 			}
@@ -115,15 +116,38 @@ public class SimpleExpressionParser implements ExpressionParser {
 		return false;
 	}
 	
+	private static int findEndOfParenthetical(String str)
+	{
+		char [] charArray = str.toCharArray();
+		int occurencesOfOpenParentheses = Utility.numberOfOccurences(str, '(');
+		int occurencesOfClosedParentheses = Utility.numberOfOccurences(str, ')');
+		if(occurencesOfOpenParentheses == occurencesOfClosedParentheses)
+		{
+			int countClosedParentheses = 0;
+			for(int i = 0; i < charArray.length; i++)
+			{
+				if(charArray[i] == ')')
+				{
+					countClosedParentheses++;
+					if(countClosedParentheses == occurencesOfClosedParentheses && occurencesOfOpenParentheses > 0 && occurencesOfClosedParentheses > 0)
+					{
+						return i;
+					}
+				}
+			}
+		}
+		return -1;
+	}
+	
 	private static Expression parseE(String str)
 	{
-		if(isA(str))
+		if(isX(str))
+		{
+			return parseX(str);
+		}
+		else if(isA(str))
 		{
 			return parseA(str);
-		}
-		else if(isM(str))
-		{
-			return parseM(str);
 		}
 		return null;
 	}
@@ -147,6 +171,10 @@ public class SimpleExpressionParser implements ExpressionParser {
 
 	private static Expression parseM(String str)
 	{
+		if(isX(str))
+		{
+			return parseX(str);
+		}
 		if(isValidRule(str, '*', SimpleExpressionParser::isM, SimpleExpressionParser::isM))
 		{
 			MultiplicativeExpression multipilicativeNode = new MultiplicativeExpression("*");
@@ -163,12 +191,12 @@ public class SimpleExpressionParser implements ExpressionParser {
 
 	private static Expression parseX(String str)
 	{
-		if(str.charAt(0) == '(' && str.charAt(str.toCharArray().length - 1) == ')')
+		if(str.charAt(0) == '(' && findEndOfParenthetical(str) != -1)
 		{
-			if(isE(str.substring(1, str.toCharArray().length - 1)))
+			if(isE(str.substring(1, findEndOfParenthetical(str))))
 			{
 				ParentheticalExpression parentheticalNode = new ParentheticalExpression("()");
-				parentheticalNode.addSubexpression(parseE(str.substring(1, str.toCharArray().length - 1)));
+				parentheticalNode.addSubexpression(parseE(str.substring(1, findEndOfParenthetical(str))));
 				return parentheticalNode;
 			}
 		}
@@ -180,9 +208,15 @@ public class SimpleExpressionParser implements ExpressionParser {
 	}
 
 	protected Expression parseExpression (String str) {
-		Expression expression = parseE(str);
+		for(char character : str.toCharArray())
+		{
+			if(character != '(' && character != ')')
+			{
+				return parseE(str); 
+			}
+		}
 		
-		return expression;
+		return null;
 	}
 	
 	public Expression deepCopy() {

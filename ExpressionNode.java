@@ -30,9 +30,7 @@ public abstract class ExpressionNode implements Expression
 			stringBuilder.append('\n');
 
 			for (Expression expr : _children) {
-
 				expr.convertToString(stringBuilder, indentLevel + 1);
-
 			}
 			
 			System.out.println(stringBuilder.toString());
