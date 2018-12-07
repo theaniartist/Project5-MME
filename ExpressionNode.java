@@ -70,9 +70,30 @@ public abstract class ExpressionNode implements Expression
 		{
 			return null;
 		}
-		
+
+		/**
+		 * Method helps flatten the expression.
+		 *
+		 */
+
 		public void flatten()
 		{
-			
+
+			if (_children.size() > 0) {
+
+
+				for (ExpressionNode subExpr : _children) {
+
+					subExpr.flatten();
+
+					if (_data.equals(subExpr._data)) {
+
+						_children.addAll(subExpr._children);
+						_children.remove(subExpr);
+
+					}
+				}
+
+			}
 		}
 }
