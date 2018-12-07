@@ -18,7 +18,7 @@ public abstract class CompoundExpressionNode extends ExpressionNode implements C
 	
 	public void addSubexpression(Expression expression)
 	{
-		_children.add((ExpressionNode)expression);
+		getChildren().add((ExpressionNode)expression);
 	}
 
 	/**
@@ -28,6 +28,6 @@ public abstract class CompoundExpressionNode extends ExpressionNode implements C
 	
 	public LinkedList<ExpressionNode> getSubexpressions()
 	{
-		return _children;
+		return getChildren();
 	}
 }

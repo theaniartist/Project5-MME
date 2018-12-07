@@ -8,15 +8,32 @@ import java.util.LinkedList;
 public abstract class ExpressionNode implements Expression
 {
 		
-		public String _data;
+		private String _data;
 		private CompoundExpression _parent;
-		protected LinkedList<ExpressionNode> _children;
+		private LinkedList<ExpressionNode> _children;
 		
 		public ExpressionNode(String data)
 		{
 			_data = data;
 			_parent = null;
 			_children = new LinkedList<ExpressionNode>();
+		}
+		
+		/**
+		 * @return Return the data associated with this ExpressionNode.
+		 */
+		public String getData()
+		{
+			return _data;
+		}
+		
+		/**
+		 * 
+		 * @return Return a linked list of children associated with an ExpressionNode.
+		 */
+		public LinkedList<ExpressionNode> getChildren()
+		{
+			return _children;
 		}
 		
 		/**

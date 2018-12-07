@@ -8,8 +8,8 @@ public class Main
 		SimpleExpressionParser parser = new SimpleExpressionParser();
 		//CompoundExpressionNode expression = (CompoundExpressionNode) parser.parseExpression("((9))*x+8+(9*80+9)");
 		//CompoundExpressionNode expression = (CompoundExpressionNode) parser.parseExpression("1*3*2*1+2+1+3");
+		CompoundExpressionNode expression = (CompoundExpressionNode) parser.parseExpression("(x+(x)+(x+x)+1)");
 		//CompoundExpressionNode expression = (CompoundExpressionNode) parser.parseExpression("(x+(x)+(x+x)+x)");
-		CompoundExpressionNode expression = (CompoundExpressionNode) parser.parseExpression("(x+(x)+(x+x)+x)");
 		//System.out.println(((ExpressionNode)expression.getSubexpressions().get(0))._data);
 		
 		expression.flatten();
