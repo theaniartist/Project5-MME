@@ -1,5 +1,10 @@
 import java.util.LinkedList;
 
+/**
+ * An abstract class that constructs a tree from the given list of expressions. Converts the expression into a String
+ * and proceeds to flatten the tree if the parent node contains the same operator in the lext level of its children.
+ */
+
 public abstract class ExpressionNode implements Expression
 {
 		
@@ -55,26 +60,46 @@ public abstract class ExpressionNode implements Expression
 			}
 
 		}
+
+	/**
+	 * Returns the expression's parent
+	 * @return the expression's parent
+	 */
 		
 		public CompoundExpression getParent()
 		{
 			return _parent;
 		}
-		
+
+	/**
+	 * Sets the parent to the specified parent expression
+	 * @param parent the CompoundExpression that should be the parent of the target object
+	 */
+
 		public void setParent (CompoundExpression parent)
 		{
 			_parent = parent;
 		}
+
+	/**
+	 * Creates and returns a deep copy of the expression.
+	 * The entire tree rooted at the target node is copied, i.e.,
+	 * the copied Expression is as deep as possible.
+	 * @return the deep copy
+	 */
 		
 		public Expression deepCopy()
 		{
 			return null;
 		}
 
-		/**
-		 * Method helps flatten the expression.
-		 *
-		 */
+	/**
+	 * Recursively flattens the expression as much as possible
+	 * throughout the entire tree. Specifically, in every multiplicative
+	 * or additive expression x whose first or last
+	 * child c is of the same type as x, the children of c will be added to x, and
+	 * c itself will be removed. This method modifies the expression itself.
+	 */
 
 		public void flatten()
 		{
